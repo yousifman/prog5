@@ -1,5 +1,4 @@
-# prog3-2017-solution
+# prog4 shell
 
-This repo branch contains a solution for program 3 in nc state cg class 2017. 
+This repo branch contains a shell for program 4 in nc state cg class 2020. 
 
-It should remain private.
