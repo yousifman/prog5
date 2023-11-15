@@ -3,6 +3,7 @@
 /* assignment specific globals */
 const INPUT_TRIANGLES_URL = "https://ncsucgclass.github.io/prog4/triangles.json"; // triangles file loc
 const INPUT_ELLIPSOIDS_URL = "https://ncsucgclass.github.io/prog3/ellipsoids.jsonn"; // ellipsoids file loc
+const INPUT_ROOT_URL = "https://ncsucgclass.github.io/prog4/"; // Root url for texture file locs
 var defaultEye = vec3.fromValues(0.5,0.5,-0.5); // default eye position in world space
 var defaultCenter = vec3.fromValues(0.5,0.5,0.5); // default view direction in world space
 var defaultUp = vec3.fromValues(0,1,0); // default view up vector
@@ -23,6 +24,7 @@ var normalBuffers = []; // this contains normal component lists by set, in tripl
 var uvBuffers = []; //this contains uv coords component lists by set, in doubles
 var triSetSizes = []; // this contains the size of each triangle set
 var triangleBuffers = []; // lists of indices into vertexBuffers by set, in triples
+var textureBuffers = []; // list of textures, one for each model
 var viewDelta = 0; // how much to displace view with each key press
 
 /* shader parameter locations */
@@ -36,6 +38,7 @@ var diffuseULoc; // where to put diffuse reflecivity for fragment shader
 var specularULoc; // where to put specular reflecivity for fragment shader
 var shininessULoc; // where to put specular exponent for fragment shader
 var alphaULoc; // where to put alpha for fragment shader
+var samplerULoc; // where to put texture sampler for fragment shader
 
 /* interaction variables */
 var Eye = vec3.clone(defaultEye); // eye position in world space
@@ -412,6 +415,18 @@ function loadModels() {
                 uvBuffers[whichSet] = gl.createBuffer(); // init empty webgl set uv coords component buffer
                 gl.bindBuffer(gl.ARRAY_BUFFER,uvBuffers[whichSet]); // activate that buffer
                 gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(inputTriangles[whichSet].glUVs),gl.STATIC_DRAW); // data in
+
+                // load this set's texture
+                var textureImage = new Image();
+                textureImage.onload = function() {
+                    var texture = gl.createTexture();
+                    gl.bindTexture(gl.TEXTURE_2D, texture);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
+                    gl.generateMipmap(gl.TEXTURE_2D);
+                
+                    textureBuffers.push(texture); // Store the texture buffer for later use
+                };
+                textureImage.src = inputTriangles[whichSet].material.texture;
             
                 // set up the triangle index array, adjusting indices across sets
                 inputTriangles[whichSet].glTriangles = []; // flat index list for webgl
@@ -427,8 +442,6 @@ function loadModels() {
                 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(inputTriangles[whichSet].glTriangles),gl.STATIC_DRAW); // data in
 
             } // end for each triangle set 
-
-            console.log(inputTriangles);
         
             inputEllipsoids = getJSONFile(INPUT_ELLIPSOIDS_URL,"ellipsoids"); // read in the ellipsoids
 
@@ -536,6 +549,9 @@ function setupShaders() {
         uniform vec3 uSpecular; // the specular reflectivity
         uniform float uShininess; // the specular exponent
         uniform float uAlpha; // the alpha component
+
+        // texture sampler
+        uniform sampler2D uSampler; 
         
         // geometry properties
         varying vec3 vWorldPos; // world xyz of fragment
@@ -562,8 +578,11 @@ function setupShaders() {
             vec3 specular = uSpecular*uLightSpecular*highlight; // specular term
             
             // combine to output color
-            vec3 colorOut = ambient + diffuse + specular; // no specular yet
-            gl_FragColor = vec4(colorOut, 1.0); 
+            vec3 colorOut = ambient + diffuse + specular;
+
+            // combine with texture color
+            vec4 textureColor = texture2D(uSampler, vVertexUV);
+            gl_FragColor = vec4(colorOut.rgb * textureColor.rgb, uAlpha); 
         }
     `;
     
@@ -616,6 +635,7 @@ function setupShaders() {
                 specularULoc = gl.getUniformLocation(shaderProgram, "uSpecular"); // ptr to specular
                 shininessULoc = gl.getUniformLocation(shaderProgram, "uShininess"); // ptr to shininess
                 alphaULoc = gl.getUniformLocation(shaderProgram, "uAlpha"); // ptr to alpha component
+                samplerULoc = gl.getUniformLocation(shaderProgram, "uSampler"); // ptr to texture sampler
                 
                 // pass global constants into fragment uniforms
                 gl.uniform3fv(eyePositionULoc,Eye); // pass in the eye's position
@@ -698,6 +718,11 @@ function renderModels() {
         gl.uniform3fv(specularULoc,currSet.material.specular); // pass in the specular reflectivity
         gl.uniform1f(shininessULoc,currSet.material.n); // pass in the specular exponent
         gl.uniform1f(alphaULoc,currSet.material.alpha); // pass in the alpha component
+
+        // texture: feed to the fragment shader
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, textureBuffers[whichTriSet]);
+        gl.uniform1i(samplerULoc, 0);
         
         // vertex buffer: activate and feed into vertex shader
         gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffers[whichTriSet]); // activate
@@ -750,6 +775,7 @@ function main() {
   setupWebGL(); // set up the webGL environment
   loadModels(); // load in the models from tri file
   setupShaders(); // setup the webGL shaders
+  console.log(textureBuffers);
   renderModels(); // draw the triangles using webGL
   
 } // end main
