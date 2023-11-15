@@ -35,6 +35,7 @@ var ambientULoc; // where to put ambient reflecivity for fragment shader
 var diffuseULoc; // where to put diffuse reflecivity for fragment shader
 var specularULoc; // where to put specular reflecivity for fragment shader
 var shininessULoc; // where to put specular exponent for fragment shader
+var alphaULoc; // where to put alpha for fragment shader
 
 /* interaction variables */
 var Eye = vec3.clone(defaultEye); // eye position in world space
@@ -534,6 +535,7 @@ function setupShaders() {
         uniform vec3 uDiffuse; // the diffuse reflectivity
         uniform vec3 uSpecular; // the specular reflectivity
         uniform float uShininess; // the specular exponent
+        uniform float uAlpha; // the alpha component
         
         // geometry properties
         varying vec3 vWorldPos; // world xyz of fragment
@@ -542,7 +544,7 @@ function setupShaders() {
             
         void main(void) {
 
-            vec2 a = vVertexUV;
+            vec2 a = vVertexUV*uAlpha;
         
             // ambient term
             vec3 ambient = uAmbient*uLightAmbient; 
@@ -613,6 +615,7 @@ function setupShaders() {
                 diffuseULoc = gl.getUniformLocation(shaderProgram, "uDiffuse"); // ptr to diffuse
                 specularULoc = gl.getUniformLocation(shaderProgram, "uSpecular"); // ptr to specular
                 shininessULoc = gl.getUniformLocation(shaderProgram, "uShininess"); // ptr to shininess
+                alphaULoc = gl.getUniformLocation(shaderProgram, "uAlpha"); // ptr to alpha component
                 
                 // pass global constants into fragment uniforms
                 gl.uniform3fv(eyePositionULoc,Eye); // pass in the eye's position
@@ -694,6 +697,7 @@ function renderModels() {
         gl.uniform3fv(diffuseULoc,currSet.material.diffuse); // pass in the diffuse reflectivity
         gl.uniform3fv(specularULoc,currSet.material.specular); // pass in the specular reflectivity
         gl.uniform1f(shininessULoc,currSet.material.n); // pass in the specular exponent
+        gl.uniform1f(alphaULoc,currSet.material.alpha); // pass in the alpha component
         
         // vertex buffer: activate and feed into vertex shader
         gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffers[whichTriSet]); // activate
