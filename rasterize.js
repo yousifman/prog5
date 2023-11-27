@@ -5,8 +5,8 @@
 const INPUT_TRIANGLES_URL = "https://ncsucgclass.github.io/prog4/triangles.json"; // triangles file loc
 const INPUT_ELLIPSOIDS_URL = "https://ncsucgclass.github.io/prog3/ellipsoids.jsonn"; // ellipsoids file loc
 const INPUT_ROOT_URL = "https://ncsucgclass.github.io/prog4/"; // Root url for texture file locs
-const INPUT_PORTAL_URL = "Cube.json";
-const YOUSIF_ROOT_URL = "";
+const INPUT_PORTAL_URL = "https://raw.githubusercontent.com/yousifman/prog4/main/Cube.json";
+const YOUSIF_ROOT_URL = "https://raw.githubusercontent.com/yousifman/prog4/main/";
 var defaultEye = vec3.fromValues(0.5,0.5,-0.5); // default eye position in world space
 var defaultCenter = vec3.fromValues(0.5,0.5,0.5); // default view direction in world space
 var defaultUp = vec3.fromValues(0,1,0); // default view up vector
@@ -239,6 +239,10 @@ function handleKeyDown(event) {
                 handleKeyDown.modelOn = null; // no highlighted model
                 handleKeyDown.whichOn = -1; // nothing highlighted
                 makeItYourOwn = !makeItYourOwn;
+                if (makeItYourOwn)
+                    setBackground(YOUSIF_ROOT_URL + "portal_background.jpg");
+                else
+                    setBackground("https://ncsucgclass.github.io/prog4/sky.jpg");
                 loadModels();
             }
         case "Backspace": // reset model transforms to default
@@ -259,26 +263,28 @@ function handleKeyDown(event) {
     } // end switch
 } // end handleKeyDown
 
+function setBackground(source) {
+    var imageCanvas = document.getElementById("myImageCanvas"); // create a 2d canvas
+    var cw = imageCanvas.width, ch = imageCanvas.height; 
+    imageContext = imageCanvas.getContext("2d"); 
+    var bkgdImage = new Image(); 
+    bkgdImage.crossOrigin = "Anonymous";
+    bkgdImage.src = source;
+    bkgdImage.onload = function(){
+        var iw = bkgdImage.width, ih = bkgdImage.height;
+        imageContext.drawImage(bkgdImage,0,0,iw,ih,0,0,cw,ch);   
+    }
+    console.log(bkgdImage);
+}
+
 // set up the webGL environment
 function setupWebGL() {
     
     // Set up keys
     document.onkeydown = handleKeyDown; // call this when key pressed
 
+    setBackground("https://ncsucgclass.github.io/prog4/sky.jpg");
 
-    var imageCanvas = document.getElementById("myImageCanvas"); // create a 2d canvas
-    var cw = imageCanvas.width, ch = imageCanvas.height; 
-    imageContext = imageCanvas.getContext("2d"); 
-    var bkgdImage = new Image(); 
-    bkgdImage.crossOrigin = "Anonymous";
-    bkgdImage.src = "https://ncsucgclass.github.io/prog3/sky.jpg";
-    bkgdImage.onload = function(){
-        var iw = bkgdImage.width, ih = bkgdImage.height;
-        imageContext.drawImage(bkgdImage,0,0,iw,ih,0,0,cw,ch);   
-    }
-    console.log(bkgdImage);
-
-     
     // Get the canvas and context
     var canvas = document.getElementById("myWebGLCanvas"); // create a js canvas
     gl = canvas.getContext("webgl"); // get a webgl object from it
