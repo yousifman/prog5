@@ -1,4 +1,11 @@
-# prog4 shell
+# prog4 
 
-This repo branch contains a shell for program 4 in nc state cg class 2020. 
+My partial submission has the following additions:
+    - Passed UVs and alpha to gl
+    - Passed texture to gl
+    - Rendered rudimentary textures with bugs:
+        - All textures are the same
+        - Textures are upside down
+
+    .45,.25,.65
 
