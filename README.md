@@ -11,8 +11,8 @@ My submission has the following extra credit:
 Press the '!' key to see my favorite companion from my favorite game!
 Press the 'b' key to toggle between these texture modulation options:
 
-    1. C = Cf\*Ct, A=Af\*At (default)
+    1. C = Cf*Ct, A=Af*At (default)
 
-    2. C = Cf\*(1-Ct) + Ct, A=Af\*At
+    2. C = Cf*(1-Ct) + Ct, A=Af*At
 
-    3. C = Ct, A=Af\*At
+    3. C = Ct, A=Af*At
