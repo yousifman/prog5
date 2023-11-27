@@ -498,6 +498,8 @@ function loadModels() {
                 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(inputTriangles[whichSet].glTriangles),gl.STATIC_DRAW); // data in
 
             } // end for each triangle set 
+
+            console.log(inputTriangles[0].center);
         
             inputEllipsoids = getJSONFile(INPUT_ELLIPSOIDS_URL,"ellipsoids"); // read in the ellipsoids
 

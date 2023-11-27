@@ -6,6 +6,3 @@ My partial submission has the following additions:
     - Rendered rudimentary textures with bugs:
         - All textures are the same
         - Textures are upside down
-
-    .45,.25,.65
-

@@ -39,11 +39,12 @@ def mirror_normals(normals):
 
 # Modify the create_json function to include uvs
 def create_json(vertices, normals, uvs, triangles):
+    mirrored_uvs = [[-uv[0], -uv[1]] for uv in uvs]
     data = {
         "material": {"ambient": [0.1, 0.1, 0.1], "diffuse": [0.9, 0.9, 0.9], "specular": [0.3, 0.3, 0.3], "n": 11, "alpha": 1.0, "texture": "Portal_Companion_Cube.png"},
         "vertices": vertices,
         "normals": normals,
-        "uvs": uvs,
+        "uvs": mirrored_uvs,
         "triangles": triangles
     }
 
@@ -51,7 +52,7 @@ def create_json(vertices, normals, uvs, triangles):
 
 def obj_to_json(obj_file_path, output_json_path, scale_factor=1.0):  # Add a scale_factor parameter
     vertices, normals, uvs, triangles = parse_obj_file(obj_file_path)
-    translated_vertices = translate_to_point(vertices, [1/2, 1/8, -0.5], scale_factor=scale_factor)  # Pass scale_factor
+    translated_vertices = translate_to_point(vertices, [1/2, 1/2, 0.4], scale_factor=scale_factor)  # Pass scale_factor
     mirrored_vertices = mirror_xy_plane(translated_vertices)
     mirrored_normals = mirror_normals(normals)
     data = create_json(mirrored_vertices, mirrored_normals, uvs, triangles)
@@ -63,4 +64,4 @@ def obj_to_json(obj_file_path, output_json_path, scale_factor=1.0):  # Add a sca
 obj_file_path = "Cube.obj"  # Replace with the path to your .obj file
 output_json_path = "Cube.json"  # Replace with the desired output JSON file path
 
-obj_to_json(obj_file_path, output_json_path, scale_factor=100.0)
+obj_to_json(obj_file_path, output_json_path, scale_factor=25.0)
