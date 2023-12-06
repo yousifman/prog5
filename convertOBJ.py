@@ -3,7 +3,7 @@ import json
 def parse_obj_file(file_path):
     vertices = []
     normals = []
-    uvs = []  # New list for texture coordinates
+    uvs = [] 
     triangles = []
 
     with open(file_path, 'r') as file:
