@@ -61,7 +61,7 @@ def obj_to_json(obj_file_path, output_json_path, scale_factor=1.0):  # Add a sca
         json.dump(data, json_file, indent=4)
 
 # Example usage with a scale factor of 2.0
-obj_file_path = "Cube.obj"  # Replace with the path to your .obj file
-output_json_path = "Cube.json"  # Replace with the desired output JSON file path
+obj_file_path = "b.obj"  # Replace with the path to your .obj file
+output_json_path = "b.json"  # Replace with the desired output JSON file path
 
 obj_to_json(obj_file_path, output_json_path, scale_factor=25.0)
