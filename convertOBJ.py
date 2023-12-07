@@ -41,7 +41,7 @@ def mirror_normals(normals):
 def create_json(vertices, normals, uvs, triangles):
     mirrored_uvs = [[-uv[0], -uv[1]] for uv in uvs]
     data = {
-        "material": {"ambient": [0.1, 0.1, 0.1], "diffuse": [0.9, 0.9, 0.9], "specular": [0.3, 0.3, 0.3], "n": 11, "alpha": 1.0, "texture": "Portal_Companion_Cube.png"},
+        "material": {"ambient": [0.1, 0.1, 0.1], "diffuse": [0.9, 0.9, 0.9], "specular": [0.3, 0.3, 0.3], "n": 11, "alpha": 1.0, "texture": "frog.jpg"},
         "vertices": vertices,
         "normals": normals,
         "uvs": mirrored_uvs,

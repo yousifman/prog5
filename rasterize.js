@@ -5,7 +5,7 @@
 const INPUT_TRIANGLES_URL = "https://ncsucgclass.github.io/prog4/triangles.json"; // triangles file loc
 const INPUT_ROOT_URL = "https://ncsucgclass.github.io/prog4/"; // Root url for texture file locs
 const INPUT_PORTAL_URL = "b.json";
-const YOUSIF_ROOT_URL = "https://raw.githubusercontent.com/yousifman/prog4/main/";
+const YOUSIF_ROOT_URL = "https://raw.githubusercontent.com/yousifman/prog5/main/";
 var defaultEye = vec3.fromValues(0.5,0.5,-0.5); // default eye position in world space
 var defaultCenter = vec3.fromValues(0.5,0.5,0.5); // default view direction in world space
 var defaultUp = vec3.fromValues(0,1,0); // default view up vector
